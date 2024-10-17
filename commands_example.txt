@@ -1,0 +1,8 @@
+load seq1a.fasta
+cut seq1 2 20
+paste seq2 0
+reverse_complement seq1
+cut seq1 10 40
+paste seq2 50
+clean seq2
+save
