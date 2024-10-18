@@ -30,6 +30,14 @@ class SequenceManipulator:
         else:
             print(f"Séquence {seq_id} non trouvée.")
 
+    def remove(self, seq_id):
+        """supprime la la séquence donnée."""
+        if seq_id in self.sequences:
+            del sequences[seq_id]
+            print(f"suppression de la séquence {seq_id} exécuté.")
+        else:
+            print(f"Séquence {seq_id} non trouvée.")
+            
     def delete(self, seq_id, start, end):
         """Supprime une portion de la séquence."""
         if seq_id in self.sequences:
@@ -105,6 +113,8 @@ class SequenceManipulator:
             self.delete(parts[1], int(parts[2]), int(parts[3]))
         elif cmd == "cut" and len(parts) == 4:
             self.cut(parts[1], int(parts[2]), int(parts[3]))
+        elif cmd == "remove" and len(parts) == 2:
+            self.paste(parts[1])
         elif cmd == "paste" and len(parts) == 3:
             self.paste(parts[1], int(parts[2]))
         elif cmd == "clean" and len(parts) == 2:
