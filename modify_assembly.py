@@ -114,7 +114,7 @@ class SequenceManipulator:
         elif cmd == "cut" and len(parts) == 4:
             self.cut(parts[1], int(parts[2]), int(parts[3]))
         elif cmd == "remove" and len(parts) == 2:
-            self.paste(parts[1])
+            self.remove(parts[1])
         elif cmd == "paste" and len(parts) == 3:
             self.paste(parts[1], int(parts[2]))
         elif cmd == "clean" and len(parts) == 2:
