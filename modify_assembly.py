@@ -1,4 +1,4 @@
-import argparse
+fimport argparse
 from Bio import SeqIO
 from Bio.Seq import Seq
 
@@ -33,7 +33,7 @@ class SequenceManipulator:
     def remove(self, seq_id):
         """supprime la la séquence donnée."""
         if seq_id in self.sequences:
-            del sequences[seq_id]
+            del self.sequences[seq_id]
             print(f"suppression de la séquence {seq_id} exécuté.")
         else:
             print(f"Séquence {seq_id} non trouvée.")
