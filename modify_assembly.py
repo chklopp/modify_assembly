@@ -1,6 +1,7 @@
 import argparse
 from Bio import SeqIO
 from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 
 class SequenceManipulator:
     def __init__(self):
@@ -58,6 +59,17 @@ class SequenceManipulator:
             print(f"Portion cut {start} à {end} in {seq_id} and stored in clipboard.")
         else:
             print(f"Sequence {seq_id} not found.")
+  
+  
+    def create_sequence_from_clipboard(self, seq_name):
+        """Create a novel sequence from clipboard."""
+        if self.clipboard is None:
+            print("Empty clipboard. Impossible to create a sequence.")
+        else :
+            self.sequences[seq_name] = SeqRecord(Seq(self.clipboard),id=seq_name,name=seq_name,description=seq_name)
+            #print(self.sequences)
+            print(f"new sequence {seq_name} added to sequences.")
+
     
     def reverse_complement_clipboard(self):
         """Reverse complement clipboard."""
@@ -125,6 +137,8 @@ class SequenceManipulator:
             self.reverse_complement_clipboard()
         elif cmd == "remove" and len(parts) == 2:
             self.remove(parts[1])
+        elif cmd == "create_sequence_from_clipboard" and len(parts) == 2:
+            self.create_sequence_from_clipboard(parts[1])
         elif cmd == "paste" and len(parts) == 3:
             self.paste(parts[1], int(parts[2]))
         elif cmd == "clean" and len(parts) == 2:
@@ -158,4 +172,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
