@@ -13,65 +13,73 @@ class SequenceManipulator:
             records = list(SeqIO.parse(file_path, "fasta"))
             for record in records:
                 self.sequences[record.id] = record
-            print(f"{len(records)} séquence(s) chargée(s) depuis {file_path}.")
+            print(f"{len(records)} sequences loaded from {file_path}.")
         except FileNotFoundError:
-            print("Fichier non trouvé.")
+            print("File not found.")
 
     def save(self, output_file):
-        """Sauvegarde les séquences modifiées dans un fichier FASTA."""
+        """Saving sequences from a modified FASTA."""
         SeqIO.write(self.sequences.values(), output_file, "fasta")
-        print(f"Séquences sauvegardées dans {output_file}.")
+        print(f"Sequences saved in {output_file}.")
 
     def reverse_complement(self, seq_id):
-        """Reverse complément la séquence donnée."""
+        """Reverse complement the given sequence."""
         if seq_id in self.sequences:
             self.sequences[seq_id].seq = self.sequences[seq_id].seq.reverse_complement()
             print(f"Reverse complément de la séquence {seq_id} exécuté.")
         else:
-            print(f"Séquence {seq_id} non trouvée.")
+            print(f"Sequence {seq_id} not found.")
 
     def remove(self, seq_id):
-        """supprime la la séquence donnée."""
+        """remove sequence from dictionnary."""
         if seq_id in self.sequences:
             del self.sequences[seq_id]
             print(f"suppression de la séquence {seq_id} exécuté.")
         else:
-            print(f"Séquence {seq_id} non trouvée.")
+            print(f"Sequence {seq_id} not found.")
             
     def delete(self, seq_id, start, end):
-        """Supprime une portion de la séquence."""
+        """Remove sequence protion."""
         if seq_id in self.sequences:
             seq = self.sequences[seq_id].seq
             new_seq = seq[:start] + seq[end+1:]
             self.sequences[seq_id].seq = new_seq
             print(f"Portion supprimée de {start} à {end} dans {seq_id}.")
         else:
-            print(f"Séquence {seq_id} non trouvée.")
+            print(f"Sequence {seq_id} not found.")
 
     def cut(self, seq_id, start, end):
-        """Coupe une portion de la séquence et la stocke dans le presse-papiers."""
+        """Cut sequence and stores the cut part in clipboard."""
         if seq_id in self.sequences:
             seq = self.sequences[seq_id].seq
             self.clipboard = seq[start:end+1]
             new_seq = seq[:start] + seq[end+1:]
             self.sequences[seq_id].seq = new_seq
-            print(f"Portion coupée de {start} à {end} dans {seq_id} et stockée.")
+            print(f"Portion cut {start} à {end} in {seq_id} and stored in clipboard.")
         else:
-            print(f"Séquence {seq_id} non trouvée.")
+            print(f"Sequence {seq_id} not found.")
+    
+    def reverse_complement_clipboard(self):
+        """Reverse complement clipboard."""
+        if self.clipboard is None:
+            print("Empty clipboard. Impossible to reverse it.")
+        else :
+            self.clipboard = self.clipboard.seq.reverse_complement()
+            print("Clipboad reversed.")
 
     def paste(self, seq_id, position):
-        """Colle la séquence du presse-papiers à la position spécifiée dans la séquence cible."""
+        """Paste clipboard at specific location in a given sequence."""
         if self.clipboard is None:
-            print("Le presse-papiers est vide. Impossible de coller.")
+            print("Empty clipboard. Impossible to paste it.")
             return
 
         if seq_id in self.sequences:
             seq = self.sequences[seq_id].seq
             new_seq = seq[:position] + self.clipboard + seq[position:]
             self.sequences[seq_id].seq = new_seq
-            print(f"Séquence collée à la position {position} dans {seq_id}.")
+            print(f"Sequence pasted at position {position} in {seq_id}.")
         else:
-            print(f"Séquence {seq_id} non trouvée.")
+            print(f"Sequence {seq_id} not found.")
 
     def clean_sequence(self, seq_id):
         """Recherche les segments composés uniquement de 'N' et ajuste leur longueur à 100 'N'."""
@@ -91,12 +99,12 @@ class SequenceManipulator:
                     new_seq += seq[i]
                     i += 1
             self.sequences[seq_id].seq = Seq(new_seq)
-            print(f"Les segments composés uniquement de 'N' ont été ajustés à 100 caractères pour {seq_id}.")
+            print(f"Segments made of 'N's have been adjusted to 100 characters for sequence {seq_id}.")
         else:
-            print(f"Séquence {seq_id} non trouvée.")
+            print(f"Sequence {seq_id} not found.")
             
     def execute(self, command, output):
-        """Analyse et exécute une commande donnée par l'utilisateur."""
+        """Analyse et execute user commands."""
         parts = command.split()
         if not parts:
             print("Commande vide.")
@@ -113,6 +121,8 @@ class SequenceManipulator:
             self.delete(parts[1], int(parts[2]), int(parts[3]))
         elif cmd == "cut" and len(parts) == 4:
             self.cut(parts[1], int(parts[2]), int(parts[3]))
+        elif cmd == "invert_clipboad" and len(parts) == 1:
+            self.invert_clipboad()
         elif cmd == "remove" and len(parts) == 2:
             self.remove(parts[1])
         elif cmd == "paste" and len(parts) == 3:
@@ -120,7 +130,7 @@ class SequenceManipulator:
         elif cmd == "clean" and len(parts) == 2:
             self.clean_sequence(parts[1])
         else:
-            print("Commande non reconnue ou paramètres incorrects.")
+            print("Non recognized command or wrong number of parameters.")
 
 def main():
     parser = argparse.ArgumentParser(description="Manipulation de fichiers FASTA via commandes.")
