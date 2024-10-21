@@ -122,7 +122,7 @@ class SequenceManipulator:
         elif cmd == "cut" and len(parts) == 4:
             self.cut(parts[1], int(parts[2]), int(parts[3]))
         elif cmd == "invert_clipboad" and len(parts) == 1:
-            self.invert_clipboad()
+            self.reverse_complement_clipboard()
         elif cmd == "remove" and len(parts) == 2:
             self.remove(parts[1])
         elif cmd == "paste" and len(parts) == 3:
