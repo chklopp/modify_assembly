@@ -64,7 +64,7 @@ class SequenceManipulator:
         if self.clipboard is None:
             print("Empty clipboard. Impossible to reverse it.")
         else :
-            self.clipboard = self.clipboard.seq.reverse_complement()
+            self.clipboard = self.clipboard.reverse_complement()
             print("Clipboad reversed.")
 
     def paste(self, seq_id, position):
