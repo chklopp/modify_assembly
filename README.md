@@ -15,6 +15,7 @@ reverse_complement seq1
 cut seq1 10 40
 paste seq2 50
 clean seq2
+filter 100
 save
 ```
 
@@ -24,4 +25,8 @@ The script can :
 - reverse_complement : for  a give sequence (name) reverse complement the sequence
 - delete : for  a give sequence (name) delete the sequence
 - load : load the sequences from the file given using the --input parameter
+- split : for a given sequence (name) and position (0-based), split the sequence in two; the first keeps the original name and the second gets -2 suffix added to the name
+- move : for a given sequence (name) and 1-based position, move the sequence to that position in the file (1 = first position)
+- rename : for a given sequence (old name) and new name, rename the sequence while preserving its position in the file
+- filter : for a given lower limit (size), remove all sequences smaller than this size from the file
 - save : save the sequences to the file given using the --output parameter
