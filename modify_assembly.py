@@ -115,6 +115,104 @@ class SequenceManipulator:
         else:
             print(f"Sequence {seq_id} not found.")
             
+
+
+    def split(self, seq_id, position):
+        """Split sequence into two sequences at given position.
+        The first part keeps the original name, the second gets -2 suffix."""
+        if seq_id in self.sequences:
+            seq = self.sequences[seq_id].seq
+            # Ensure position is within valid range
+            position = max(0, min(position, len(seq)))
+            
+            # First part (keeps original name)
+            first_part = seq[:position]
+            # Second part (gets -2 suffix)
+            second_part = seq[position:]
+            
+            # Create new sequence for the second part
+            new_seq_id = f"{seq_id}-2"
+            self.sequences[new_seq_id] = SeqRecord(Seq(str(second_part)), id=new_seq_id, name=new_seq_id, description=new_seq_id)
+            
+            # Update original sequence to first part
+            self.sequences[seq_id].seq = first_part
+            
+            print(f"Sequence {seq_id} split at position {position}. Created {new_seq_id}.")
+        else:
+            print(f"Sequence {seq_id} not found.")
+
+
+    def filter(self, min_size):
+        """Filter sequences by size: keep only sequences with length >= min_size.
+        All sequences smaller than min_size are removed from the file."""
+        removed = [sid for sid, record in self.sequences.items() if len(record.seq) < min_size]
+        for sid in removed:
+            del self.sequences[sid]
+        print(f"{len(removed)} sequence(s) shorter than {min_size} removed.")
+        print(f"{len(self.sequences)} sequence(s) kept.")
+
+
+    def move(self, seq_id, position):
+        """Move a sequence to a new position in the sequence file.
+        Position is 1-based (1 = first position).
+        The number of sequences is not modified."""
+        if seq_id in self.sequences:
+            # Convert 1-based position to 0-based index
+            pos = max(1, min(position, len(self.sequences)))
+            pos -= 1  # Convert to 0-based
+            
+            # Get all sequence IDs in current order
+            all_ids = list(self.sequences.keys())
+            
+            # Remove the sequence from its current position
+            all_ids.remove(seq_id)
+            
+            # Insert at the desired position (clamp to valid range)
+            pos = max(0, min(pos, len(all_ids)))
+            all_ids.insert(pos, seq_id)
+            
+            # Rebuild the sequences dictionary in the new order
+            self.sequences = {sid: self.sequences[sid] for sid in all_ids}
+            
+            print(f"Sequence {seq_id} moved to position {position}.")
+        else:
+            print(f"Sequence {seq_id} not found.")
+
+
+    def rename(self, old_id, new_id):
+        """Rename a sequence from old_id to new_id.
+        The position of the renamed sequence is preserved."""
+        if old_id not in self.sequences:
+            print(f"Sequence {old_id} not found.")
+            return
+        
+        if new_id in self.sequences:
+            print(f"Sequence {new_id} already exists. Renaming aborted.")
+            return
+        
+        # Get current order and position of old_id
+        all_ids = list(self.sequences.keys())
+        pos = all_ids.index(old_id)
+        
+        # Get the sequence record
+        seq_record = self.sequences[old_id]
+        seq_record.id = new_id
+        seq_record.name = new_id
+        seq_record.description = new_id
+        
+        # Rebuild dictionary: same order but with new_id at position pos
+        new_sequences = {}
+        for i, sid in enumerate(all_ids):
+            if sid == old_id:
+                # This is the position where we insert new_id
+                new_sequences[new_id] = seq_record
+            else:
+                new_sequences[sid] = self.sequences[sid]
+        
+        self.sequences = new_sequences
+        print(f"Sequence renamed from {old_id} to {new_id}.")
+
+
     def execute(self, command, output):
         """Analyse et execute user commands."""
         parts = command.split()
@@ -143,6 +241,14 @@ class SequenceManipulator:
             self.paste(parts[1], int(parts[2]))
         elif cmd == "clean" and len(parts) == 2:
             self.clean_sequence(parts[1])
+        elif cmd == "split" and len(parts) == 3:
+            self.split(parts[1], int(parts[2]))
+        elif cmd == "move" and len(parts) == 3:
+            self.move(parts[1], int(parts[2]))
+        elif cmd == "rename" and len(parts) == 3:
+            self.rename(parts[1], parts[2])
+        elif cmd == "filter" and len(parts) == 2:
+            self.filter(int(parts[1]))
         else:
             print("Non recognized command or wrong number of parameters.")
 
