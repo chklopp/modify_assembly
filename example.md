@@ -305,3 +305,25 @@ filter 61
 ```
 
 ---
+
+## join
+**Command:** `join seq1 seq2 joined`
+**Description:** Join seq2 to seq1 into a new sequence named joined; seq1 and seq2 are removed and joined takes the position of seq1
+**Original FASTA:**
+```
+>seq1
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+>seq2
+CCCCCCNCCCCCCCCCCCCCCCCCCCCNNNCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+```
+**Result FASTA:**
+```
+>joined
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCCCCCNCCCCCCCCCCCCCCCCCCCCNNNCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+```
+**Command File Content:**
+```
+join seq1 seq2 joined
+```
+
+---
