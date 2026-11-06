@@ -152,6 +152,42 @@ class SequenceManipulator:
         print(f"{len(self.sequences)} sequence(s) kept.")
 
 
+    def join(self, seq_id1, seq_id2, new_id):
+        """Join two sequences into a new one.
+        The resulting sequence is seq_id1 followed by seq_id2 and replaces
+        both source sequences at the position of seq_id1."""
+        
+        if seq_id1 not in self.sequences:
+            print(f"Sequence {seq_id1} not found.")
+            return
+        
+        if seq_id2 not in self.sequences:
+            print(f"Sequence {seq_id2} not found.")
+            return
+        
+        if new_id in self.sequences:
+            print(f"Sequence {new_id} already exists. Join aborted.")
+            return
+        
+        # Combined sequence: first sequence followed by the second one
+        combined = self.sequences[seq_id1].seq + self.sequences[seq_id2].seq
+        new_record = SeqRecord(combined, id=new_id, name=new_id, description=new_id)
+        
+        # Rebuild dictionary: the new sequence takes the position of the first one,
+        # and both source sequences are removed
+        new_sequences = {}
+        for sid, record in self.sequences.items():
+            if sid == seq_id1:
+                new_sequences[new_id] = new_record
+            elif sid == seq_id2:
+                continue
+            else:
+                new_sequences[sid] = record
+        
+        self.sequences = new_sequences
+        print(f"Sequences {seq_id1} and {seq_id2} joined into {new_id}.")
+
+
     def move(self, seq_id, position):
         """Move a sequence to a new position in the sequence file.
         Position is 1-based (1 = first position).
@@ -249,6 +285,8 @@ class SequenceManipulator:
             self.rename(parts[1], parts[2])
         elif cmd == "filter" and len(parts) == 2:
             self.filter(int(parts[1]))
+        elif cmd == "join" and len(parts) == 4:
+            self.join(parts[1], parts[2], parts[3])
         else:
             print("Non recognized command or wrong number of parameters.")
 
