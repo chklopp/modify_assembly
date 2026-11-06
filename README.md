@@ -29,4 +29,5 @@ The script can :
 - move : for a given sequence (name) and 1-based position, move the sequence to that position in the file (1 = first position)
 - rename : for a given sequence (old name) and new name, rename the sequence while preserving its position in the file
 - filter : for a given lower limit (size), remove all sequences smaller than this size from the file
+- join : for two given sequences (first name, second name) and the resulting name, join the second sequence to the first one; the two source sequences are removed and the resulting sequence takes the position of the first one
 - save : save the sequences to the file given using the --output parameter
