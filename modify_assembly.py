@@ -66,7 +66,7 @@ class SequenceManipulator:
         if self.clipboard is None:
             print("Empty clipboard. Impossible to create a sequence.")
         else :
-            self.sequences[seq_name] = SeqRecord(Seq(self.clipboard),id=seq_name,name=seq_name,description=seq_name)
+            self.sequences[seq_name] = SeqRecord(Seq(str(self.clipboard)),id=seq_name,name=seq_name,description=seq_name)
             #print(self.sequences)
             print(f"new sequence {seq_name} added to sequences.")
 
